@@ -26,6 +26,11 @@ import { MessageService } from 'primeng/api';
 import {
   MessagesModule, CheckboxModule, CaptchaModule, DropdownModule
 } from 'primeng/primeng';
+
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {TooltipModule} from 'primeng/tooltip';
+
 //service
 import { LoginService } from 'app/services/login.service';
 import { UserService } from 'app/services/user.service';
@@ -55,6 +60,9 @@ import { SystemService } from 'app/services/system.services';
     CheckboxModule,
     CaptchaModule,
     DropdownModule,
+    ButtonModule,
+    InputTextModule,
+    TooltipModule
   ],
   declarations: [ 
     LoginComponent,

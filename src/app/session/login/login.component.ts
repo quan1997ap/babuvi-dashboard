@@ -47,7 +47,6 @@ export class LoginComponent implements AfterViewInit {
     }
     _self._login.getLogin(account).subscribe( res => {
       if(res.result.success) {
-        _self.router.navigate(['/ship-manager/orders']);
         localStorage.setItem('lMenu', JSON.stringify(res.result.data.lsMenu));
         localStorage.setItem('token', JSON.stringify(res.result.data.token));
         localStorage.setItem('userData', JSON.stringify(res.result.data.userData));
@@ -55,6 +54,7 @@ export class LoginComponent implements AfterViewInit {
         localStorage.setItem('lUserSettings', JSON.stringify(res.result.data.lsUserSetting));
         localStorage.setItem('userLevel', JSON.stringify(res.result.data.userLevel));
         _self.getInfoRating(res.result.data.userData.userId);
+        _self.router.navigate(['/collaboration/collaboration-statistics']);
       } else {
         _self.msgs = [];
         _self.msgs.push({severity:'error', summary: res.result.message, detail:''});

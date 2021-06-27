@@ -15,6 +15,10 @@ export class UserService extends ApiService {
         super(ApiApplication.user.controller, http, _router);
     }
 
+    getCaptcha() {
+        return this.get(this.apiBaseController + ApiApplication.user.getCaptcha);
+    }
+
     getListStorekeeperInWarehouse(warehouseId) {
         const param = '?warehouseId=' + warehouseId;
         return this.get(this.apiBaseController + ApiApplication.user.getListStorekeeperInWarehouse + param);

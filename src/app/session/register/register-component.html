@@ -8,11 +8,12 @@
           <!-- <img src="assets/images/logoBabuvi.png"> -->
           ĐĂNG KÝ TÀI KHOẢN
         </h4>
-        <form #formSignUp="ngForm" (keyup)="handleKeyUp($event,formSignUp)" (click)="handleKeyUp($event,formSignUp)" class="CSSform">
+        <form #formSignUp="ngForm" (keyup)="handleKeyUp($event,formSignUp)" (click)="handleKeyUp($event,formSignUp)"
+          class="CSSform">
           <div class="chiaDoiPage">
             <span class="tenInput">Tên đăng nhập</span>
             <div><input class="babuvi_signup_text" type="text" placeholder="Tên đăng nhập" name="acount" ngModel
-              required pattern="^[a-zA-Z0-9]*$" acount /></div>
+                required pattern="^[a-zA-Z0-9]*$" acount /></div>
           </div>
           <div class="chiaDoiPage">
             <span class="tenInput">Số điện thoại</span>
@@ -23,17 +24,17 @@
             <span class="tenInput">Mật khẩu</span>
             <div style="position: relative;">
               <input class="babuvi_signup_text" type="{{newpw}}" placeholder="Mật khẩu ít nhất 6 kí tự" name="password"
-                ngModel required pattern="(?=.*\d)(?=.*[a-z]).{6,}" />
+                ngModel required pattern="(?=.*\d)(?=.*[a-z]).{6,}" autocomplete="off" />
               <i class="fa fa-eye-slash babuvi_show_pw" (click)="changeType(0)"></i>
             </div>
           </div>
           <div class="chiaDoiPage">
             <span class="tenInput">Nhập lại mật khẩu</span>
             <div style="position: relative;">
-              <input class="babuvi_signup_text" type="{{renewpw}}" placeholder="Nhập lại mật khẩu" name="repassword"
+              <input class="babuvi_signup_text" type="{{renewpw}}" placeholder="Nhập lại mật khẩu" name="repassword" autocomplete="off"
                 ngModel required />
               <i class="fa fa-eye-slash babuvi_show_pw" (click)="changeType(1)"></i>
-              </div>
+            </div>
           </div>
           <div class="chiaDoiPage">
             <span class="tenInput">Email</span>
@@ -56,22 +57,26 @@
             </div>
           </div>
           <div class="chiaDoiPage marginReponsive">
+            <!-- <p-captcha siteKey="6LeBbrwZAAAAAMKgz2qfMM98hhaEtk3cQG-9bNY1" initCallback="loadCaptcha"
+             (onResponse)="showResponse($event)" (onExpire)="showExpire()"></p-captcha> -->
+             <input type="text" pInputText placeholder="Captcha Code" [(ngModel)]="captchaCode" [ngModelOptions]="{standalone: true}" />
+             <button pButton type="button" style="margin: 0 8px;" icon="pi pi-refresh" iconPos="left" (click)="getCaptcha()" pTooltip="Đổi Captcha" tooltipPosition="top" ></button>
+            <img *ngIf="captchaImg" [src]="captchaImg.imageLink" >
+          </div>
+
+          <div class="chiaDoiPage marginReponsive">
             <p-checkbox name="read" [binary]="true" [(ngModel)]="readed" required></p-checkbox>
             <span style="font-size: 11px;">
               Tôi đã đọc và đồng ý với các
               <a href="https://babuvi.com/order-taobao/quy-dinh-mua-hang/" target="_blank">Quy định và Chính sách</a>
               của BABUVI.</span>
-              <div style="font-size:14px; color:red;" *ngIf="thongbaoloi">
-                <i class="fa fa-info-circle"></i> {{ thongbao }}
-              </div>
-          </div>
-          <div class="chiaDoiPage marginReponsive">
-            <p-captcha siteKey="6LeBbrwZAAAAAMKgz2qfMM98hhaEtk3cQG-9bNY1" initCallback="loadCaptcha"
-             (onResponse)="showResponse($event)" (onExpire)="showExpire()"></p-captcha>
+            <div style="font-size:14px; color:red;" *ngIf="thongbaoloi">
+              <i class="fa fa-info-circle"></i> {{ thongbao }}
+            </div>
           </div>
 
         </form>
-  
+
         <div style="text-align: center;">
           <button class="babuvi_login_btn btn btn-danger" (click)="signup(formSignUp);">
             Đăng ký

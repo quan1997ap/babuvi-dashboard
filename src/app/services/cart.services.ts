@@ -18,20 +18,6 @@ export class CartServices extends ApiService {
     super(ApiApplication.cart.controller, http, _router);
   }
 
-  addCouponCart(coupon: string, lsCart: ItemsOnShop[]) {
-    let params = { };
-    if(lsCart){
-      params['lsCart'] = lsCart;
-    }
-    if(coupon){
-      params['coupon'] = coupon;
-    }
-    return this.post(
-      this.apiBaseController + ApiApplication.cart.AddCouponCart,
-      params
-    );
-  }
-
   getAllServicesOption() {
     return this.get(
       this.apiBaseController + ApiApplication.cart.lstAllServicesOption
