@@ -37,7 +37,8 @@
             <div class="copy-section">
               <input #copyShareUrl class="copy-input" type="text" size="30" pInputText readonly
                 [(ngModel)]="currentCollaboration.shareUrl" />
-              <i class="pi pi-copy" pTooltip="Copy" tooltipPosition="top" ngxClipboard [cbContent]="currentCollaboration.shareUrl" (click)="copy()"></i>
+              <i class="pi pi-copy" pTooltip="Copy" tooltipPosition="top" ngxClipboard
+                [cbContent]="currentCollaboration.shareUrl" (click)="copy()"></i>
             </div>
           </div>
           <div class="banner-section">
@@ -63,8 +64,22 @@
           <button pButton pRipple type="button" icon="pi pi-times"
             class="p-button-rounded p-button-danger p-button-outlined" (click)="cancelViewBanner()"></button>
         </div>
-        <div class="banner-imgs">
-          <img [src]="banner.url" *ngFor="let banner of listBanner" />
+        <div class="banner-imgs"  *ngIf="!listBanner || !listBanner.length">
+          Tìm thấy 0 banner
+        </div>
+        <div class="banner-imgs" *ngIf="listBanner && listBanner.length">
+          <div *ngFor="let banner of listBanner" class="img-section">
+            <img [src]="banner?.url" alt="{{banner.title}}" [ngClass]="{ 
+              'status-1': banner.type == '1',
+               'status-2' : banner.type == '2',
+               'status-3' : banner.type == '3' }" />
+            <div *ngIf="banner?.url" class="gr-btn">
+              <button pButton type="button" label="Copy link" class="ui-button-secondary" ngxClipboard
+                [cbContent]="banner?.url" (click)="copyImgUrl()"></button>
+              <button pButton type="button" label="Tải xuống" class="ui-button-secondary"
+                (click)="downloadImg(banner)"></button>
+            </div>
+          </div>
         </div>
       </div>
       <div *ngIf="isLoading" class="loading-banner">

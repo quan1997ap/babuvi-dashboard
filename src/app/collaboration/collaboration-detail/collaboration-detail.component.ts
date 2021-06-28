@@ -1,10 +1,9 @@
+import { HttpClient } from "@angular/common/http";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ClipboardService } from "ngx-clipboard";
-import { Collaboration } from "./../collaboration-list/collaboration-list.component";
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
-import { DynamicDialogRef } from "primeng/api";
-import { DynamicDialogConfig } from "primeng/api";
+import { DynamicDialogConfig, DynamicDialogRef, MessageService } from "primeng/api";
 import { CollaborationServices } from "./../../services/collaboration.services";
-import { MessageService } from "primeng/api";
+import { Collaboration } from "./../collaboration-list/collaboration-list.component";
 @Component({
   selector: "app-collaboration-detail",
   templateUrl: "./collaboration-detail.component.html",
@@ -25,7 +24,8 @@ export class CollaborationDetailComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private _clipboardService: ClipboardService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private http: HttpClient
   ) {
     this.collaborationServices
       .getReferralProgram(config.data.referralProgramUserId)
@@ -34,6 +34,7 @@ export class CollaborationDetailComponent implements OnInit {
           ...res.result.data,
           ...{ statusDisplay: config.data.statusDisplay },
         };
+        this.currentCollaboration.shareUrl += `?referralCode=${this.currentCollaboration.referralCode}`;
       });
   }
 
@@ -61,6 +62,44 @@ export class CollaborationDetailComponent implements OnInit {
     }
   }
 
+  copyImgUrl() {
+    this.messageService.add({
+      severity: "success",
+      summary: "Success",
+      detail: "Copy Link Success",
+    });
+  }
+
+  downloadImg(banner) {
+    console.log(banner);
+    this.http.get(banner.url, { responseType: "blob" }).subscribe(
+      (val) => {
+        console.log(val);
+        const url = URL.createObjectURL(val);
+        this.downloadUrl(url, "image.png");
+        URL.revokeObjectURL(url);
+      },
+      (error) => {
+        console.log(error);
+        this.messageService.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Không tải xuống được ảnh. Bạn có thể tải xuống thủ công bằng cách nhấn chuột phải => 'Save Image as...' ",
+        });
+      }
+    );
+  }
+
+  downloadUrl(url: string, fileName: string) {
+    const a: any = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.click();
+    a.remove();
+  }
+
   viewListBanner(banner) {
     this.viewBanner = true;
     this.getBannerDesign(banner.programBannerId);
@@ -75,6 +114,8 @@ export class CollaborationDetailComponent implements OnInit {
     this.collaborationServices.getLsBannerDesignByBannerId(bannerId).subscribe(
       (res) => {
         this.listBanner = res.result.data;
+        this.listBanner = this.listBanner.sort( (imgA, imgB) => Number(imgB.status) - Number(imgA.status) );
+        console.log(this.listBanner);
         this.isLoading = false;
         this.loadBannerError = false;
       },

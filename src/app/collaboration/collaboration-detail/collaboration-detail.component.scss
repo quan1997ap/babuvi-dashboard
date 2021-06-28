@@ -113,7 +113,7 @@ flip
       .button {
         background-color: #fff;
         background: #fff;
-        color: red;
+        color: #333;
         margin: 4px;
         float: left;
       }
@@ -127,7 +127,7 @@ flip
     .title {
       font-size: 20px;
       font-weight: bold;
-      color: red;
+      color: #333;
       margin-bottom: 12px;
     }
     .copy-section {
@@ -182,13 +182,42 @@ flip
       flex: 1;
       overflow: auto;
       padding-top: 12px;
-      img {
-        margin-top: 12px;
-        margin-right: 12px;
+      .img-section{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         float: left;
-        border: 1px solid #ddd;
-        padding: 8px;
+        background: #f2f4f8;
+        padding: 12px;
         border-radius: 4px;
+        margin: 12px;
+        img {
+          margin-top: 12px;
+          margin-right: 12px;
+          float: left;
+          border: 1px solid #ddd;
+          padding: 8px;
+          border-radius: 4px;
+          float: left;
+          &.status-1{
+            background: #fff;
+          }
+          &.status-2{
+            background: #333;
+          }
+          &.status-3{
+            background: #f2f4f8;
+          }
+        }
+        .gr-btn{
+          margin-top: 12px;
+          button{
+            &:first-child{
+              margin-right: 6px;
+            }
+          }
+        }
       }
     }
   }
