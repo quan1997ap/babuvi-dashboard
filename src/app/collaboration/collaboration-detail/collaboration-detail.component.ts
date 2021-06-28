@@ -17,6 +17,9 @@ export class CollaborationDetailComponent implements OnInit {
   isLoading = false;
   listBanner = [];
   loadBannerError = false;
+  timeoutUpdateClickReferralLink: any;
+  disableCopyBtn = false;
+
   constructor(
     private collaborationServices: CollaborationServices,
     public ref: DynamicDialogRef,
@@ -27,8 +30,10 @@ export class CollaborationDetailComponent implements OnInit {
     this.collaborationServices
       .getReferralProgram(config.data.referralProgramUserId)
       .subscribe((res) => {
-        console.log(res);
-        this.currentCollaboration = {  ...res.result.data, ...{statusDisplay: config.data.statusDisplay}};
+        this.currentCollaboration = {
+          ...res.result.data,
+          ...{ statusDisplay: config.data.statusDisplay },
+        };
       });
   }
 
@@ -44,6 +49,16 @@ export class CollaborationDetailComponent implements OnInit {
       summary: "Success",
       detail: "Copy Link Success",
     });
+    if (this.disableCopyBtn == false) {
+      clearTimeout(this.timeoutUpdateClickReferralLink);
+      this.disableCopyBtn = true;
+      this.collaborationServices
+        .updateClickReferralLink(this.currentCollaboration.referralCode)
+        .subscribe((res) => {});
+      this.timeoutUpdateClickReferralLink = setTimeout(() => {
+        this.disableCopyBtn = false;
+      }, 2000);
+    }
   }
 
   viewListBanner(banner) {
@@ -59,7 +74,6 @@ export class CollaborationDetailComponent implements OnInit {
     this.loadBannerError = false;
     this.collaborationServices.getLsBannerDesignByBannerId(bannerId).subscribe(
       (res) => {
-        console.log(res);
         this.listBanner = res.result.data;
         this.isLoading = false;
         this.loadBannerError = false;

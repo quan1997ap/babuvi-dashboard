@@ -342,7 +342,8 @@ export const ApiApplication = {
     getReferralProgram: "/getReferralProgram",
     getLsBannerDesignByBannerId: "/getLsBannerDesignByBannerId",
     searchReferralProgramUser: "/searchReferralProgramUser",
-    getLsReferralProgramByUser: "/getLsReferralProgramByUser"
+    getLsReferralProgramByUser: "/getLsReferralProgramByUser",
+    UpdateClickReferralLink: "/UpdateClickReferralLink"
   },
 };
 

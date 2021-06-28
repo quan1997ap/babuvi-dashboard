@@ -58,4 +58,9 @@ export class CollaborationServices extends ApiService {
         ApiApplication.referralProgram.getLsReferralProgramByUser
     );
   }
+
+  updateClickReferralLink(referralCode){
+    return this.put( ApiApplication.referralProgram.controller + 
+      ApiApplication.referralProgram.UpdateClickReferralLink +`?referralCode=${referralCode}` )
+  }
 }
