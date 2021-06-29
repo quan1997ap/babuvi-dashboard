@@ -13,6 +13,7 @@ export class User {
   lsUserSetting: any[];
   captchaImageLink: string;
   captchaCode: string;
+  referralCode: string;
 
   // update
   createdDate?: Date;

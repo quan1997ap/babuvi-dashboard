@@ -1,3 +1,4 @@
+import { CollaborationServices } from "./../../services/collaboration.services";
 import { UserService } from "app/services/user.service";
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Validators, FormControl } from "@angular/forms";
@@ -5,11 +6,19 @@ import { Warehouse } from "app/model/warehouse.model";
 import { User } from "app/model/user.model";
 import { SelectItemGroup, SelectItem } from "primeng/api"; // truong import
 import { Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
+import "rxjs/add/operator/filter";
+
+export interface ReferralInfo {
+  referralCode: null;
+  expiration: null;
+}
 @Component({
   selector: "ms-register-session",
   templateUrl: "./register-component.html",
   styleUrls: ["./register-component.scss"],
   encapsulation: ViewEncapsulation.None,
+  providers: [CollaborationServices],
 })
 export class RegisterComponent {
   lstWarehouse: Warehouse[];
@@ -27,9 +36,80 @@ export class RegisterComponent {
   registerData: any = {};
   captchaCode: string = "";
 
-  constructor(private userService: UserService, private router: Router) {}
+  /**
+   * 1 min = 60s = 60 * 1000
+   * 30 days = 30 * 24 * 60 * 60 * 1000 = 2592000000
+   */
+  expiryTime = 2592000000; // 2592000000;
+  referralCode = null;
+
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private collaborationServices: CollaborationServices
+  ) {}
 
   ngOnInit() {
+    /**
+     * set referralCode
+     */
+    this.route.queryParams.subscribe((params) => {
+      try {
+        let referralCodeString = localStorage.getItem("referralCode");
+        let referralOldInfo: ReferralInfo = null;
+        if (referralCodeString) {
+          referralOldInfo = JSON.parse(referralCodeString );
+        }
+        let currentTime = new Date().getTime();
+        if (params && params.referralCode != null) {
+          if (referralOldInfo && referralOldInfo.referralCode) {
+            if (currentTime > Number(referralOldInfo.expiration)) {
+              console.log(
+                "referralCode qua han.Lay code moi" + params.referralCode, 
+                referralOldInfo,
+              );
+              // set new referralCode
+              localStorage.setItem(
+                "referralCode",
+                JSON.stringify({
+                  referralCode: params.referralCode,
+                  expiration: currentTime + this.expiryTime,
+                })
+              );
+              this.referralCode = params.referralCode;
+            } else {
+              console.log(
+                "referralCode con han.Lay code cu" + referralOldInfo.referralCode , 
+                referralOldInfo
+              );
+              this.referralCode = referralOldInfo.referralCode;
+            }
+          } else {
+            console.log("chưa có referralCode", params.referralCode);
+            // set new referralCode
+            localStorage.setItem(
+              "referralCode",
+              JSON.stringify({
+                referralCode: params.referralCode,
+                expiration: currentTime + this.expiryTime,
+              })
+            );
+            this.referralCode = params.referralCode;
+          }
+        }
+
+        if (this.referralCode) {
+          this.collaborationServices
+            .updateClickReferralLink(this.referralCode)
+            .subscribe((res) => {});
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    // get register infor
     this.getCaptcha();
 
     this.userService
@@ -59,7 +139,12 @@ export class RegisterComponent {
           this.captchaImg = res.result.data;
         }
       },
-      (error) => {   this.showMessage("alert-danger", "Không lấy được captcha! Hãy thử lại!"); }
+      (error) => {
+        this.showMessage(
+          "alert-danger",
+          "Không lấy được captcha! Hãy thử lại!"
+        );
+      }
     );
   }
   getErrorMessageEmail() {
@@ -77,6 +162,7 @@ export class RegisterComponent {
     userData.email = this.emailValue;
     userData.captchaImageLink = this.captchaImg.imageLink;
     userData.captchaCode = this.captchaCode;
+    userData.referralCode = this.referralCode;
     userData.WarehouseReceive = this.selectedWarehouse.warehouseId;
     this.userService
       .AddNewCustommer(userData)
@@ -131,6 +217,7 @@ export class RegisterComponent {
     userData.WarehouseReceive = form.WarehouseReceive;
     userData.captchaImageLink = this.captchaImg.imageLink;
     userData.captchaCode = this.captchaCode;
+    userData.referralCode = this.referralCode;
     this.countSubmit++;
     for (let key in form) {
       if (form[key] == "" || form[key] == undefined) {

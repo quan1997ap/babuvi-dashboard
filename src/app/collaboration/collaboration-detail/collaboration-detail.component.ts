@@ -50,16 +50,6 @@ export class CollaborationDetailComponent implements OnInit {
       summary: "Success",
       detail: "Copy Link Success",
     });
-    if (this.disableCopyBtn == false) {
-      clearTimeout(this.timeoutUpdateClickReferralLink);
-      this.disableCopyBtn = true;
-      this.collaborationServices
-        .updateClickReferralLink(this.currentCollaboration.referralCode)
-        .subscribe((res) => {});
-      this.timeoutUpdateClickReferralLink = setTimeout(() => {
-        this.disableCopyBtn = false;
-      }, 2000);
-    }
   }
 
   copyImgUrl() {
@@ -71,7 +61,6 @@ export class CollaborationDetailComponent implements OnInit {
   }
 
   downloadImg(banner) {
-    console.log(banner);
     this.http.get(banner.url, { responseType: "blob" }).subscribe(
       (val) => {
         console.log(val);
