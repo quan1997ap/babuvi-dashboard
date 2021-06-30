@@ -1,3 +1,4 @@
+import { UserService } from "app/services/user.service";
 import { AppInforRatingService } from "./../../services/app-state/app-infor-rating.service";
 import { User } from "./../../model/user.model";
 import {
@@ -40,6 +41,7 @@ import { LocationStrategy } from "@angular/common";
   selector: "app-layout",
   templateUrl: "./admin-layout.component.html",
   styleUrls: ["./admin-layout.component.scss"],
+  providers: [UserService]
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private _router: Subscription;
@@ -69,6 +71,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   _menu: Menu[] = [];
   _subMenu: ChildrenItems[];
 
+  lstNotification = [];
   constructor(
     location: LocationStrategy,
     private _passData: PassDataService,
@@ -81,14 +84,13 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     public menuItems: MenuItems,
     public horizontalMenuItems: HorizontalMenuItems,
     public translate: TranslateService,
-    private appInforRatingService: AppInforRatingService
+    private appInforRatingService: AppInforRatingService,
+    private userService: UserService
   ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|fr/) ? browserLang : "en");
 
-    // location.onPopState(() => {
-    //   alert(window.location);
-    // });
+    this.getUserNotification();
   }
 
   ngOnInit(): void {
@@ -396,5 +398,12 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       return false;
     }
+  }
+
+  getUserNotification() {
+    this.userService.getLsNotification().subscribe((resNotification) => {
+      this.lstNotification = resNotification.result.data;
+      console.log(resNotification);
+    });
   }
 }

@@ -15,6 +15,10 @@ export class UserService extends ApiService {
         super(ApiApplication.user.controller, http, _router);
     }
 
+    getLsNotification(){
+        return this.get(this.apiBaseController + ApiApplication.user.getLsNotification);
+    }
+
     getCaptcha() {
         return this.get(this.apiBaseController + ApiApplication.user.getCaptcha);
     }
