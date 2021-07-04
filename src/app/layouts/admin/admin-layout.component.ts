@@ -1,3 +1,5 @@
+import { NotificationListComponent } from "./notification-list/notification-list.component";
+import { DialogService } from "primeng/api";
 import { UserService } from "app/services/user.service";
 import { AppInforRatingService } from "./../../services/app-state/app-infor-rating.service";
 import { User } from "./../../model/user.model";
@@ -36,12 +38,13 @@ import { LoginService } from "app/services/login.service";
 import { RefeshTokenModel } from "app/model/refesh.model";
 import { DataParse } from "app/common-func/data-parse";
 import { LocationStrategy } from "@angular/common";
+import { MatDialog } from "@angular/material";
 
 @Component({
   selector: "app-layout",
   templateUrl: "./admin-layout.component.html",
   styleUrls: ["./admin-layout.component.scss"],
-  providers: [UserService]
+  providers: [UserService],
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private _router: Subscription;
@@ -72,6 +75,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   _subMenu: ChildrenItems[];
 
   lstNotification = [];
+  turnOffNotification = true;
+
   constructor(
     location: LocationStrategy,
     private _passData: PassDataService,
@@ -85,12 +90,39 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     public horizontalMenuItems: HorizontalMenuItems,
     public translate: TranslateService,
     private appInforRatingService: AppInforRatingService,
-    private userService: UserService
+    private userService: UserService,
+    public dialog: MatDialog
   ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|fr/) ? browserLang : "en");
 
+    // set Notification
     this.getUserNotification();
+    this.checkNotificationStatus(true);
+  }
+
+  checkNotificationStatus(showDialog: boolean ) {
+    let lUserSettings = JSON.parse(localStorage.getItem("lUserSettings"));
+    if (lUserSettings && lUserSettings.length) {
+      let configNotification = lUserSettings.find(
+        (config) => config.settingCode == "6"
+      );
+      if (configNotification) {
+        // settingValue = 1 ---> hiển thị popup
+        if (configNotification.settingValue == "1") {
+          this.turnOffNotification = false;
+          if(showDialog == true){
+            this.dialog.open(NotificationListComponent, {
+              width: "600px",
+            });
+          }
+        }
+        // settingValue = 2 ---> k hiển thị popup
+        else if (configNotification.settingValue == "2") {
+          this.turnOffNotification = true;
+        }
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -297,7 +329,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    console.log("des");
     // this.detectChangeSubscript.unsubscribe();
     this._router.unsubscribe();
   }
@@ -355,7 +386,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeMenuLayout(value) {
-    console.log(value);
     if (value) {
       this.menuLayout = "top-menu";
     } else {
@@ -400,10 +430,26 @@ export class AdminLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  notificationSetting($event) {
+    // settingValue = 1 ---> hiển thị popup
+    // settingValue = 2 --> không hiển thị popup
+
+    if ($event.checked == true) {
+      this.userService.turnOffNotification().subscribe((turnOffRes) => {
+        // console.log(turnOffRes);
+        this.userService.saveNotificationStatus("2");
+      });
+    } else {
+      this.userService.turnOnNotification().subscribe((turnOnRes) => {
+        // console.log(turnOnRes);
+        this.userService.saveNotificationStatus("1");
+      });
+    }
+  }
+
   getUserNotification() {
     this.userService.getLsNotification().subscribe((resNotification) => {
       this.lstNotification = resNotification.result.data;
-      console.log(resNotification);
     });
   }
 }

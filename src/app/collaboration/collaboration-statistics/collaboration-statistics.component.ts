@@ -79,7 +79,6 @@ export class CollaborationStatisticsComponent implements OnInit {
       .searchReferralProgramUser(querySearch, this.pageSize, this.pageIndex)
       .subscribe(
         (res) => {
-          console.log(res.result.data);
           this.statistic = res.result.data;
           this.lsCommissionRequestPayment =
             res.result.data.lsCommissionRequestPayment;

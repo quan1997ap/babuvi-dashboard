@@ -44,6 +44,8 @@ import { AppComponent } from "./app.component";
 import { AdminLayoutComponent } from "./layouts/admin/admin-layout.component";
 import { AuthLayoutComponent } from "./layouts/auth/auth-layout.component";
 import { ShareCommonModule } from "./common/share-common.module";
+import { NotificationListComponent } from './layouts/admin/notification-list/notification-list.component';
+
 
 import { SharedModule } from "./shared/shared.module";
 import { LstClientService } from "./services/lstClient.service";
@@ -60,7 +62,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ConfirmationService } from "primeng/api";
 import { CustomUrlSerializer } from "./ship-manager/custom-url-serializer";
 import { RequestInterceptor } from "./services/interceptor.service";
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { TooltipModule } from "primeng/tooltip";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -75,7 +77,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, NotificationListComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -108,7 +110,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgxDatatableModule,
     ConfirmDialogModule,
     ShareCommonModule,
-    MatTooltipModule
+    TooltipModule,
   ],
   providers: [
     AppInforRatingService,
@@ -132,7 +134,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     LoginService,
     HttpService,
   ],
-  entryComponents: [],
+  entryComponents: [NotificationListComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

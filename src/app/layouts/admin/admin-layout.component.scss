@@ -51,6 +51,7 @@ button:focus {
 ::ng-deep {
   .mat-menu-panel {
     max-width: 600px !important;
+    min-width: 400px !important;
     .notification {
       padding: 20px;
       .notification-item {

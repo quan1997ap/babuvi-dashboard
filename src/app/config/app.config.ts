@@ -313,7 +313,9 @@ export const ApiApplication = {
     CheckConnectedZalo: "CheckConnectedZalo",
     SearchUserCustomer: "searchUserCustomer",
     getCaptcha: "getCaptcha",
-    getLsNotification: "getLsNotification"
+    getLsNotification: "getLsNotification",
+    turnOffNotification: "turnOffNotification",
+    turnOnNotification: "turnOnNotification"
   },
   wallet: {
     controller: ApiBaseUrl + "wallet",
