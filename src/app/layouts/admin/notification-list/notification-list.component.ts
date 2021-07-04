@@ -11,6 +11,8 @@ import { Component, OnInit } from "@angular/core";
 export class NotificationListComponent implements OnInit {
   turnOffNotification = false;
   lstNotification = [];
+  loading = true;
+  error = false;
   constructor(
     private userService: UserService,
     public dialogRef: MatDialogRef<NotificationListComponent>
@@ -21,9 +23,19 @@ export class NotificationListComponent implements OnInit {
   }
 
   getUserNotification() {
-    this.userService.getLsNotification().subscribe((resNotification) => {
-      this.lstNotification = resNotification.result.data;
-    });
+    this.error = false;
+    this.loading = true;
+    this.userService.getLsNotification().subscribe(
+      (resNotification) => {
+        this.lstNotification = resNotification.result.data;
+        this.loading = false;
+        this.error = false;
+      },
+      (error) => {
+        this.loading = false;
+        this.error = true;
+      }
+    );
   }
 
   notificationSetting($event) {
